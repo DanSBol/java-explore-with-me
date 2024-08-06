@@ -3,13 +3,9 @@ package ru.practicum.ewm.dto.stats;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Data
-@Getter
-@Setter
 @Builder(builderClassName = "StatsDtoBuilder")
 @AllArgsConstructor
 @NoArgsConstructor
