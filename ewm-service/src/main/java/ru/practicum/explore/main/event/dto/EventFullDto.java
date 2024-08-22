@@ -3,7 +3,7 @@ package ru.practicum.explore.main.event.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import ru.practicum.explore.main.category.model.Category;
-import ru.practicum.explore.main.event.model.Event;
+import ru.practicum.explore.main.event.model.EventState;
 import ru.practicum.explore.main.event.model.Location;
 import ru.practicum.explore.main.user.dto.UserDto;
 import ru.practicum.explore.main.user.model.User;
@@ -28,7 +28,7 @@ public class EventFullDto {
     private boolean available;
     private LocalDateTime publishedOn;
     private boolean requestModeration;
-    private Event.State state;
+    private EventState state;
     private String title;
     private Long views;
     private Long calculatedRating;

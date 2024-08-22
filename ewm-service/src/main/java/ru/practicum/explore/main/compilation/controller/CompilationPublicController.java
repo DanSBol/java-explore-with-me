@@ -1,5 +1,6 @@
 package ru.practicum.explore.main.compilation.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,13 +12,10 @@ import java.util.List;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/compilations")
 public class CompilationPublicController {
     private final CompilationService compilationService;
-
-    public CompilationPublicController(CompilationService compilationService) {
-        this.compilationService = compilationService;
-    }
 
     @GetMapping
     public ResponseEntity<List<CompilationDto>> getAllCompilations(@RequestParam(required = false) Boolean pinned,

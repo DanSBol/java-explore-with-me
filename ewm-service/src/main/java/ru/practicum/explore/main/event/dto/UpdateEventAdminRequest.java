@@ -7,6 +7,8 @@ import ru.practicum.explore.main.event.model.Location;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
+import ru.practicum.explore.main.event.model.UpdateEventAdminState;
+
 import java.time.LocalDateTime;
 
 @Data
@@ -24,12 +26,7 @@ public class UpdateEventAdminRequest {
     @PositiveOrZero
     private Integer participantLimit;
     private Boolean requestModeration;
-    private State stateAction;
+    private UpdateEventAdminState stateAction;
     @Size(max = 120, min = 3, message = "Количество символов в заголовке события должно быть в пределах 3-120")
     private String title;
-
-    public enum State {
-        PUBLISH_EVENT,
-        REJECT_EVENT
-    }
 }

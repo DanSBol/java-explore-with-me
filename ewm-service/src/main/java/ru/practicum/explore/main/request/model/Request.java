@@ -2,7 +2,7 @@ package ru.practicum.explore.main.request.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.practicum.explore.main.event.model.Event;
 import ru.practicum.explore.main.user.model.User;
@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @AllArgsConstructor
-@RequiredArgsConstructor
+@NoArgsConstructor
 @Table(name = "requests", schema = "public")
 public class Request {
     @Id
@@ -32,8 +32,4 @@ public class Request {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private RequestStatus status;
-
-    public enum RequestStatus {
-        CONFIRMED, CANCELED, PENDING, REJECTED
-    }
 }

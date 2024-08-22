@@ -1,5 +1,6 @@
 package ru.practicum.explore.main.compilation.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,13 +14,10 @@ import jakarta.validation.Valid;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(path = "/admin/compilations")
 public class CompilationAdminController {
     private final CompilationService compilationService;
-
-    public CompilationAdminController(CompilationService compilationService) {
-        this.compilationService = compilationService;
-    }
 
     @PostMapping
     public ResponseEntity<CompilationDto> createCompilation(@RequestBody @Valid NewCompilationDto newCompilationDto) {
@@ -29,9 +27,11 @@ public class CompilationAdminController {
 
     @PatchMapping("/{compilationId}")
     public ResponseEntity<CompilationDto> patchCompilation(@PathVariable Long compilationId,
-                                                           @RequestBody @Valid UpdateCompilationRequest updateCompilationRequest) {
+                                                           @RequestBody @Valid UpdateCompilationRequest
+                                                                   updateCompilationRequest) {
         log.info("Обновление информации о подборке id={}, compilation={}", compilationId, updateCompilationRequest);
-        return new ResponseEntity<>(compilationService.updateCompilation(compilationId, updateCompilationRequest), HttpStatus.OK);
+        return new ResponseEntity<>(compilationService.updateCompilation(compilationId, updateCompilationRequest),
+                HttpStatus.OK);
     }
 
     @DeleteMapping("/{compilationId}")

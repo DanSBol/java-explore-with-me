@@ -7,6 +7,7 @@ import ru.practicum.explore.stats.server.entity.EndpointHit;
 
 @Mapper(componentModel = "spring")
 public interface StatsMapper {
+
     EndpointHitDto toEndpointHitDto(EndpointHit endpointHit);
 
     EndpointHit toEndpointHit(EndpointHitDto endpointHitDto);

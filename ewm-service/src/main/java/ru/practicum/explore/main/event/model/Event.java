@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @AllArgsConstructor
-@RequiredArgsConstructor
 @ToString
 @Table(name = "events", schema = "public")
 public class Event {
@@ -53,18 +52,11 @@ public class Event {
     private boolean requestModeration;
     @Enumerated(EnumType.STRING)
     @Column(name = "state", nullable = false)
-    private State state;
+    private EventState state;
     @Column(name = "title", nullable = false)
     private String title;
     @Column(name = "event_views", nullable = false)
     private Long views;
     @Column(name = "calculated_rating", nullable = false)
     private Long calculatedRating;
-
-    public enum State {
-        PENDING,
-        PUBLISHED,
-        CANCELED
-    }
 }
-

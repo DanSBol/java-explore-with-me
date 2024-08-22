@@ -13,6 +13,8 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import ru.practicum.explore.main.event.model.EventState;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +31,7 @@ public class EventCriteriaRepository {
 
     public Page<Event> findAllByInitiatorIdInAndStateInAndCategoryIdInAndEventDateBetween(
             List<Long> users,
-            List<Event.State> states,
+            List<EventState> states,
             List<Long> categories,
             LocalDateTime rangeStart,
             LocalDateTime rangeEnd,
@@ -64,7 +66,7 @@ public class EventCriteriaRepository {
         return getEvents(pageable, criteriaQuery);
     }
 
-    private Predicate createAdminPredicate(List<Long> users, List<Event.State> states,
+    private Predicate createAdminPredicate(List<Long> users, List<EventState> states,
                                            List<Long> categories, LocalDateTime rangeStart,
                                            LocalDateTime rangeEnd, Root<Event> root) {
         List<Predicate> predicates = new ArrayList<>();
@@ -84,11 +86,13 @@ public class EventCriteriaRepository {
     private Predicate createUserPredicate(String text, List<Long> categories, Boolean paid, LocalDateTime rangeStart,
                                           LocalDateTime rangeEnd, Boolean available, Root<Event> root) {
         List<Predicate> predicates = new ArrayList<>();
-        predicates.add(criteriaBuilder.equal(root.get("state"), Event.State.PUBLISHED));
+        predicates.add(criteriaBuilder.equal(root.get("state"), EventState.PUBLISHED));
         if (text != null) {
             predicates.add(criteriaBuilder.or(
-                    criteriaBuilder.like(criteriaBuilder.lower(root.get("annotation")), "%" + text.toLowerCase() + "%"),
-                    criteriaBuilder.like(criteriaBuilder.lower(root.get("description")), "%" + text.toLowerCase() + "%")
+                    criteriaBuilder.like(criteriaBuilder.lower(root.get("annotation")), "%" +
+                            text.toLowerCase() + "%"),
+                    criteriaBuilder.like(criteriaBuilder.lower(root.get("description")), "%" +
+                            text.toLowerCase() + "%")
             ));
         }
         if (categories != null) {
@@ -117,5 +121,4 @@ public class EventCriteriaRepository {
         }
         return predicates;
     }
-
 }

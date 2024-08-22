@@ -2,7 +2,7 @@ package ru.practicum.explore.main.request.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-import ru.practicum.explore.main.request.model.Request;
+import ru.practicum.explore.main.request.model.RequestStatus;
 
 import java.time.LocalDateTime;
 
@@ -13,5 +13,5 @@ public class RequestDto {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime created;
     private Long requester;
-    private Request.RequestStatus status;
+    private RequestStatus status;
 }

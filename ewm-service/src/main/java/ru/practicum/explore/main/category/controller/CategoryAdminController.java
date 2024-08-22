@@ -1,5 +1,6 @@
 package ru.practicum.explore.main.category.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,13 +13,10 @@ import jakarta.validation.Valid;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(path = "/admin/categories")
 public class CategoryAdminController {
     private final CategoryService categoryService;
-
-    public CategoryAdminController(CategoryService categoryService) {
-        this.categoryService = categoryService;
-    }
 
     @PostMapping
     public ResponseEntity<CategoryDto> createCategory(@RequestBody @Valid NewCategoryDto newCategoryDto) {

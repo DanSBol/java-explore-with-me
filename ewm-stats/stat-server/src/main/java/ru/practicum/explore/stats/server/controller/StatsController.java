@@ -1,5 +1,6 @@
 package ru.practicum.explore.stats.server.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -15,20 +16,20 @@ import java.util.List;
 @RestController
 @RequestMapping
 @Slf4j
+@RequiredArgsConstructor
 public class StatsController {
 
     private final StatsServiceImpl statsService;
 
-    public StatsController(StatsServiceImpl statsService) {
-        this.statsService = statsService;
-    }
-
     @GetMapping("/stats")
-    public ResponseEntity<Object> getStats(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime start,
-                                           @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime end,
+    public ResponseEntity<Object> getStats(@RequestParam
+                                               @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime start,
+                                           @RequestParam
+                                           @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime end,
                                            @RequestParam(required = false) List<String> uris,
                                            @RequestParam(defaultValue = "false") boolean unique) {
-        log.info("Получен запрос к эндпоинту {} /stats?start={}&end={}&uris={}&unique={}", "GET", start, end, uris, unique);
+        log.info("Получен запрос к эндпоинту {} /stats?start={}&end={}&uris={}&unique={}", "GET", start, end, uris,
+                unique);
         if (start.isAfter(end)) {
             log.error("Дата начала должна быть меньше даты конца диапозона");
             return ResponseEntity.badRequest().build();

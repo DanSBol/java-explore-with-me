@@ -1,11 +1,12 @@
 package ru.practicum.explore.main.compilation.service;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explore.main.compilation.dto.CompilationDto;
 import ru.practicum.explore.main.compilation.dto.NewCompilationDto;
 import ru.practicum.explore.main.compilation.dto.UpdateCompilationRequest;
@@ -20,9 +21,11 @@ import ru.practicum.explore.main.exceptions.NotFoundException;
 import ru.practicum.explore.main.exceptions.RequestValidationException;
 import ru.practicum.explore.main.rating.service.RatingService;
 import ru.practicum.explore.main.request.model.Request;
+import ru.practicum.explore.main.request.model.RequestStatus;
 import ru.practicum.explore.main.request.repository.RequestRepository;
 import ru.practicum.explore.stats.client.StatsClient;
 import ru.practicum.explore.stats.dto.ViewStatsDto;
+import ru.practicum.explore.main.exceptions.NotFoundType;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -31,7 +34,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class CompilationService {
     private final EventRepository eventRepository;
     private final RequestRepository requestRepository;
@@ -40,23 +43,27 @@ public class CompilationService {
     private final RatingService ratingService;
     private final StatsClient statsClient;
 
+    @Transactional
     public void deleteCompilationById(Long compId) {
         log.info("Удаление подборки id={}", compId);
         getCompilationById(compId);
         compilationRepository.deleteById(compId);
     }
 
+    @Transactional
     public CompilationDto createCompilation(NewCompilationDto newCompilationDto) {
         log.info("Создание новой подборки compilation={}", newCompilationDto);
         if (newCompilationDto.getTitle() == null) {
             throw new RequestValidationException("Пустой заголовок", "Заголовок не может быть пустым");
         }
         List<Event> storedEvents = eventRepository.findAllByIdIsIn(newCompilationDto.getEvents());
-        Compilation compilation = new Compilation(null, storedEvents, newCompilationDto.isPinned(), newCompilationDto.getTitle());
+        Compilation compilation = new Compilation(null, storedEvents, newCompilationDto.isPinned(),
+                newCompilationDto.getTitle());
         Compilation saved = compilationRepository.save(compilation);
         return createCompilationDto(saved);
     }
 
+    @Transactional
     public CompilationDto updateCompilation(Long compId, UpdateCompilationRequest updateCompilationRequest) {
         log.info("Обновление подборки id={}, compilation={}", compId, updateCompilationRequest);
         Compilation compilation = getCompilationById(compId);
@@ -75,12 +82,13 @@ public class CompilationService {
     private Compilation getCompilationById(Long compId) {
         log.info("Поиск подборки в БД по id={}", compId);
         return compilationRepository.findById(compId)
-                .orElseThrow(() -> new NotFoundException(NotFoundException.NotFoundType.COMPILATION, compId));
+                .orElseThrow(() -> new NotFoundException(NotFoundType.COMPILATION, compId));
     }
 
     public List<CompilationDto> getAllCompilations(Boolean pinned, Integer from, Integer size) {
         log.info("Получение всех подборок с пагинацией и привязкой={}", pinned);
-        PageRequest pageRequest = PageRequest.of(from / size, size, Sort.by(Sort.Direction.ASC, "id"));
+        PageRequest pageRequest = PageRequest.of(from / size, size, Sort.by(Sort.Direction.ASC,
+                "id"));
 
         Page<Compilation> compilations;
         if (pinned == null) {
@@ -93,7 +101,8 @@ public class CompilationService {
                 .collect(Collectors.toList());
     }
 
-    private Compilation createCompilationForUpdate(Compilation stored, UpdateCompilationRequest updateCompilationRequest) {
+    private Compilation createCompilationForUpdate(Compilation stored,
+                                                   UpdateCompilationRequest updateCompilationRequest) {
         if (updateCompilationRequest.getPinned() != null) {
             stored.setPinned(updateCompilationRequest.getPinned());
         }
@@ -120,10 +129,10 @@ public class CompilationService {
         List<ViewStatsDto> stat = statsClient.getStats(eventFullDto.getCreatedOn().format(returnedTimeFormat),
                 LocalDateTime.now().format(returnedTimeFormat),
                 List.of("/events/" + eventFullDto.getId()), false);
-        if (stat.size() > 0) {
-            eventFullDto.setViews(stat.get(0).getHits());
+        if (!stat.isEmpty()) {
+            eventFullDto.setViews(stat.getFirst().getHits());
         }
-        List<Request> confirmedRequests = requestRepository.findAllByStatusAndEventId(Request.RequestStatus.CONFIRMED,
+        List<Request> confirmedRequests = requestRepository.findAllByStatusAndEventId(RequestStatus.CONFIRMED,
                 eventFullDto.getId());
         eventFullDto.setConfirmedRequests(confirmedRequests.size());
         eventMapper.toEventFullDto(ratingService.getEventRatings(eventFullDto.getId()), eventFullDto);

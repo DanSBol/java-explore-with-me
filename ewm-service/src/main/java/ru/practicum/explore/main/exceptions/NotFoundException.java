@@ -4,13 +4,6 @@ import lombok.Getter;
 
 @Getter
 public class NotFoundException extends BaseException {
-    public enum NotFoundType {
-        CATEGORY,
-        USER,
-        COMPILATION,
-        REQUEST,
-        EVENT
-    }
 
     public NotFoundException(NotFoundType notFoundType, Long id) {
         super(null, "Запрашиваемый объект не найден или не доступен");
