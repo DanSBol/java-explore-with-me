@@ -7,8 +7,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class ViewStatsDto {
     private String app;   //Название сервиса
     private String uri;   //URI сервиса

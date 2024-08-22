@@ -1,7 +1,6 @@
 package ru.practicum.explore.stats.server.entity;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import jakarta.persistence.*;
@@ -11,7 +10,6 @@ import java.time.LocalDateTime;
 @Table(name = "stats")
 @Getter
 @Setter
-@NoArgsConstructor
 public class EndpointHit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

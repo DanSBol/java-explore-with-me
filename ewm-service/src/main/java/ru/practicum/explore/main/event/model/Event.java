@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 @ToString
 @Table(name = "events", schema = "public")
 public class Event {
@@ -24,11 +25,11 @@ public class Event {
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(name = "create_date", nullable = false)
     private LocalDateTime createdOn;
     @Column(name = "description", nullable = false)
     private String description;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(name = "event_date", nullable = false)
     private LocalDateTime eventDate;
     @ManyToOne

@@ -35,7 +35,6 @@ public class CategoryService {
         return categoryMapper.toCategoryDto(categoryRepository.save(categoryMapper.toCategory(newCategoryDto)));
     }
 
-    @Transactional
     public void deleteCategory(Long id) {
         log.info("Удаление категории id={}", id);
         getCategoryById(id);

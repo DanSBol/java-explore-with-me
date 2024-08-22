@@ -1,8 +1,6 @@
 package ru.practicum.explore.main.user.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import jakarta.persistence.*;
@@ -10,8 +8,6 @@ import java.io.Serializable;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(schema = "public", name = "users")
 public class User implements Serializable {

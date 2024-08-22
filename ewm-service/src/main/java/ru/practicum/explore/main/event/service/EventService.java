@@ -48,7 +48,6 @@ import static ru.practicum.explore.main.event.model.FilterSort.VIEWS;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class EventService {
     private final EventRepository eventRepository;
     private final EventCriteriaRepository eventCriteriaRepository;
