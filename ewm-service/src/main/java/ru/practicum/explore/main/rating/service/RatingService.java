@@ -10,6 +10,7 @@ import ru.practicum.explore.main.exceptions.NotFoundException;
 import ru.practicum.explore.main.exceptions.NotFoundType;
 import ru.practicum.explore.main.rating.dto.EventRatingsDto;
 import ru.practicum.explore.main.rating.model.Rating;
+import ru.practicum.explore.main.rating.model.RatingId;
 import ru.practicum.explore.main.rating.repository.RatingRepository;
 import ru.practicum.explore.main.user.mapper.UserMapper;
 import ru.practicum.explore.main.user.model.User;
@@ -63,7 +64,7 @@ public class RatingService {
         }
 
         return new Rating(
-                new Rating.RatingId(event.get().getId(), user.get().getId()),
+                new RatingId(event.get().getId(), user.get().getId()),
                 event.get(), user.get(), ratingValue
         );
     }
