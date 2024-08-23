@@ -89,10 +89,8 @@ public class EventCriteriaRepository {
         predicates.add(criteriaBuilder.equal(root.get("state"), EventState.PUBLISHED));
         if (text != null) {
             predicates.add(criteriaBuilder.or(
-                    criteriaBuilder.like(criteriaBuilder.lower(root.get("annotation")), "%" +
-                            text.toLowerCase() + "%"),
-                    criteriaBuilder.like(criteriaBuilder.lower(root.get("description")), "%" +
-                            text.toLowerCase() + "%")
+                    criteriaBuilder.like(criteriaBuilder.lower(root.get("annotation")), "%" + text.toLowerCase() + "%"),
+                    criteriaBuilder.like(criteriaBuilder.lower(root.get("description")), "%" + text.toLowerCase() + "%")
             ));
         }
         if (categories != null) {

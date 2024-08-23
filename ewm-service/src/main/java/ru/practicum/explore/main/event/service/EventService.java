@@ -6,7 +6,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explore.main.category.model.Category;
 import ru.practicum.explore.main.category.repository.CategoryRepository;
 import ru.practicum.explore.main.event.dto.EventFullDto;
@@ -59,13 +58,10 @@ public class EventService {
     private final DateTimeFormatter returnedTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private final StatsClient statsClient;
 
-    @Transactional
     public EventFullDto createEvent(Long userId, NewEventDto newEvent) {
         log.info("Создание нового события userId={}, event={}", userId, newEvent);
-        User initiator = userRepository.findById(userId).orElseThrow(() ->
-                new NotFoundException(NotFoundType.USER, userId));
-        Category stored = categoryRepository.findById(newEvent.getCategory()).orElseThrow(() ->
-                new NotFoundException(NotFoundType.CATEGORY, newEvent.getCategory()));
+        User initiator = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(NotFoundType.USER, userId));
+        Category stored = categoryRepository.findById(newEvent.getCategory()).orElseThrow(() -> new NotFoundException(NotFoundType.CATEGORY, newEvent.getCategory()));
         Event newEventEntity = creatingNewEvent(newEvent, initiator, stored);
         return eventMapper.toEventFullDto(eventRepository.save(newEventEntity));
     }
@@ -73,30 +69,23 @@ public class EventService {
     public List<EventShortDto> getEventsByUserId(Long userId, int from, int size) {
         log.info("Получение информации о событиях пользователем userId={}", userId);
         Pageable pageable = PageRequest.of(from / size, size);
-        userRepository.findById(userId).orElseThrow(() ->
-                new NotFoundException(NotFoundType.USER, userId));
+        userRepository.findById(userId).orElseThrow(() -> new NotFoundException(NotFoundType.USER, userId));
         return eventRepository.findAllByInitiatorId(userId, pageable).stream()
                 .map(eventMapper::toEventShortDto)
-                .map(eventShortDto -> eventMapper.toEventShortDto(ratingService.getEventRatings(eventShortDto.getId()),
-                        eventShortDto))
+                .map(eventShortDto -> eventMapper.toEventShortDto(ratingService.getEventRatings(eventShortDto.getId()), eventShortDto))
                 .collect(Collectors.toList());
     }
 
     public EventFullDto getEventsByUserAndEventId(Long userId, Long eventId) {
         log.info("Получение информации о событии пользователем");
-        userRepository.findById(userId).orElseThrow(() -> new NotFoundException(NotFoundType.USER,
-                userId));
-        Event stored = eventRepository.findById(eventId).orElseThrow(() ->
-                new NotFoundException(NotFoundType.EVENT, eventId));
-        return eventMapper.toEventFullDto(ratingService.getEventRatings(stored.getId()),
-                eventMapper.toEventFullDto(stored));
+        userRepository.findById(userId).orElseThrow(() -> new NotFoundException(NotFoundType.USER, userId));
+        Event stored = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException(NotFoundType.EVENT, eventId));
+        return eventMapper.toEventFullDto(ratingService.getEventRatings(stored.getId()), eventMapper.toEventFullDto(stored));
     }
 
-    @Transactional
     public EventFullDto updateEventsByUser(Long userId, Long eventId, UpdateEventUserRequest updateEventUserRequest) {
         log.info("Обновление события пользователем");
-        Event stored = eventRepository.findById(eventId).orElseThrow(() ->
-                new NotFoundException(NotFoundType.EVENT, eventId));
+        Event stored = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException(NotFoundType.EVENT, eventId));
         checkUpdateWithStateByUser(userId, updateEventUserRequest, stored);
         return eventMapper.toEventFullDto(eventRepository.save(createUserUpdateEvent(stored, updateEventUserRequest)));
     }
@@ -118,14 +107,11 @@ public class EventService {
         }
     }
 
-    @Transactional
     public EventFullDto updateEventsByAdmin(Long eventId, UpdateEventAdminRequest updateEventAdminRequest) {
         log.info("Обновление события eventId={}, event={}", eventId, updateEventAdminRequest);
-        Event stored = eventRepository.findById(eventId).orElseThrow(() ->
-                new NotFoundException(NotFoundType.EVENT, eventId));
+        Event stored = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException(NotFoundType.EVENT, eventId));
         checkUpdateWithState(stored, updateEventAdminRequest);
-        return eventMapper.toEventFullDto(eventRepository.save(createAdminUpdateEvent(stored,
-                updateEventAdminRequest)));
+        return eventMapper.toEventFullDto(eventRepository.save(createAdminUpdateEvent(stored, updateEventAdminRequest)));
     }
 
     private void checkUpdateWithState(Event stored, UpdateEventAdminRequest updateEventAdminRequest) {
@@ -133,8 +119,7 @@ public class EventService {
             throw new BaseException("Условия выполнения не соблюдены", "Изменять можно неопубликованные события");
         }
         if (stored.getEventDate().isBefore(LocalDateTime.now().plusHours(1))) {
-            throw new BaseException("Неверно указана дата события",
-                    "Дата события не может быть менее чем за 1 час до начала");
+            throw new BaseException("Неверно указана дата события", "Дата события не может быть менее чем за 1 час до начала");
         }
         if (updateEventAdminRequest.getEventDate() != null) {
             if (updateEventAdminRequest.getEventDate().isBefore(LocalDateTime.now())) {
@@ -143,7 +128,6 @@ public class EventService {
         }
     }
 
-    @Transactional
     public EventFullDto getEventById(Long id, HttpServletRequest request) {
         log.info("Получение информации о событии eventId={}", id);
         Event stored = eventRepository.findByIdAndState(id, EventState.PUBLISHED);
@@ -179,8 +163,7 @@ public class EventService {
     }
 
     public List<EventFullDto> getEventsForAdmin(List<Long> users, List<EventState> states, List<Long> categories,
-                                                LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from,
-                                                Integer size) {
+                                                LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size) {
         log.info("Получение информации о событиях с фильтрами admin");
         Pageable pageable = PageRequest.of(from / size, size, Sort.by(Sort.Direction.ASC, "id"));
         log.info("Получение информации о событиях с фильтрами admin из репозиория");
@@ -229,8 +212,8 @@ public class EventService {
                 statsClient.getStats(eventFullDto.getCreatedOn().format(returnedTimeFormat),
                         LocalDateTime.now().format(returnedTimeFormat),
                         List.of("/events/" + eventFullDto.getId()), true);
-        if (!stat.isEmpty()) {
-            eventFullDto.setViews(stat.getFirst().getHits());
+        if (stat.size() > 0) {
+            eventFullDto.setViews(stat.get(0).getHits());
         }
         List<Request> confirmedRequests = requestRepository.findAllByStatusAndEventId(RequestStatus.CONFIRMED,
                 eventFullDto.getId());

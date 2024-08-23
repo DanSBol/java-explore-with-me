@@ -27,36 +27,27 @@ public class EventPublicController {
     public ResponseEntity<List<EventFullDto>> getAllEvents(@RequestParam(required = false) String text,
                                                            @RequestParam(required = false) List<Long> categories,
                                                            @RequestParam(required = false) Boolean paid,
-                                                           @RequestParam(required = false)
-                                                               @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-                                                               LocalDateTime rangeStart,
-                                                           @RequestParam(required = false)
-                                                               @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-                                                               LocalDateTime rangeEnd,
-                                                           @RequestParam(required = false, defaultValue = "false")
-                                                               Boolean onlyAvailable,
-                                                           @RequestParam(required = false, defaultValue = "EVENT_DATE")
-                                                               FilterSort sort,
+                                                           @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
+                                                           @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
+                                                           @RequestParam(required = false, defaultValue = "false") Boolean onlyAvailable,
+                                                           @RequestParam(required = false, defaultValue = "EVENT_DATE") FilterSort sort,
                                                            @RequestParam(defaultValue = "0") Integer from,
                                                            @RequestParam(defaultValue = "10") Integer size,
                                                            HttpServletRequest request) {
-        log.info("Получение событий с параметрами text={}, categories={}, paid={}, rangeStart={}, rangeEnd={}, " +
-                        "onlyAvailable={}, sort={}, from={}, size={}, uri={}",
+        log.info("Получение событий с параметрами text={}, categories={}, paid={}, rangeStart={}, rangeEnd={}, onlyAvailable={}, sort={}, from={}, size={}, uri={}",
                 text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size, request.getRequestURI());
         if (rangeStart != null && rangeEnd != null && rangeStart.isAfter(rangeEnd)) {
             throw new RequestValidationException("Error dates", "Дата начала диапозона должна быть меньше даты конца.");
         }
         return new ResponseEntity<>(
-                eventService.getEvents(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size,
-                        request),
+                eventService.getEvents(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size, request),
                 HttpStatus.OK
         );
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<EventFullDto> getEventById(@PathVariable Long id, HttpServletRequest request) {
-        log.info("Получение подробной информации об опубликованном событии по его id={}, uri={}", id,
-                request.getRequestURI());
+        log.info("Получение подробной информации об опубликованном событии по его id={}, uri={}", id, request.getRequestURI());
         return new ResponseEntity<>(eventService.getEventById(id, request), HttpStatus.OK);
     }
 }

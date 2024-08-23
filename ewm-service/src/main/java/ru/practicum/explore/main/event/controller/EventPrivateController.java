@@ -32,16 +32,14 @@ public class EventPrivateController {
     public ResponseEntity<List<EventShortDto>> getAllEventsByUserId(@PathVariable Long userId,
                                                                     @RequestParam(defaultValue = "0") int from,
                                                                     @RequestParam(defaultValue = "10") int size) {
-        log.info("Получение событий, добавленных текущим пользователем userId={}, from={}, size={}", userId, from,
-                size);
+        log.info("Получение событий, добавленных текущим пользователем userId={}, from={}, size={}", userId, from, size);
         return new ResponseEntity<>(eventService.getEventsByUserId(userId, from, size), HttpStatus.OK);
     }
 
     @GetMapping("/{eventId}")
     public ResponseEntity<EventFullDto> getEventsByUserAndEventId(@PathVariable Long userId,
                                                                   @PathVariable Long eventId) {
-        log.info("Получение полной информации о событии, добавленном текущим пользователем userId={}, eventId={}",
-                userId, eventId);
+        log.info("Получение полной информации о событии, добавленном текущим пользователем userId={}, eventId={}", userId, eventId);
         return new ResponseEntity<>(eventService.getEventsByUserAndEventId(userId, eventId), HttpStatus.OK);
     }
 
@@ -51,7 +49,6 @@ public class EventPrivateController {
                                                     @RequestBody @Valid UpdateEventUserRequest updateEventUserRequest) {
         log.info("Изменение события, добавленного текущим пользователем userId={}, eventId={}, event={}",
                 userId, eventId, updateEventUserRequest);
-        return new ResponseEntity<>(eventService.updateEventsByUser(userId, eventId, updateEventUserRequest),
-                HttpStatus.OK);
+        return new ResponseEntity<>(eventService.updateEventsByUser(userId, eventId, updateEventUserRequest), HttpStatus.OK);
     }
 }

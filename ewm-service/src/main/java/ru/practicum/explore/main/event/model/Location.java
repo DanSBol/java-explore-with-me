@@ -1,5 +1,6 @@
 package ru.practicum.explore.main.event.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -8,6 +9,7 @@ import jakarta.persistence.Embeddable;
 
 @Getter
 @Setter
+@AllArgsConstructor
 @RequiredArgsConstructor
 @Embeddable
 public class Location {
