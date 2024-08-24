@@ -212,7 +212,7 @@ public class EventService {
                 statsClient.getStats(eventFullDto.getCreatedOn().format(returnedTimeFormat),
                         LocalDateTime.now().format(returnedTimeFormat),
                         List.of("/events/" + eventFullDto.getId()), true);
-        if (stat.size() > 0) {
+        if (!stat.isEmpty()) {
             eventFullDto.setViews(stat.get(0).getHits());
         }
         List<Request> confirmedRequests = requestRepository.findAllByStatusAndEventId(RequestStatus.CONFIRMED,

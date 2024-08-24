@@ -11,7 +11,6 @@ import jakarta.persistence.*;
 @Getter
 @Setter
 @AllArgsConstructor
-@RequiredArgsConstructor
 @Table(name = "ratings", schema = "public")
 public class Rating {
     @EmbeddedId
