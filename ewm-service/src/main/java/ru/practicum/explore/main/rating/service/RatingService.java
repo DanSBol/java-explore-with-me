@@ -3,7 +3,6 @@ package ru.practicum.explore.main.rating.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explore.main.event.model.Event;
 import ru.practicum.explore.main.event.repository.EventRepository;
 import ru.practicum.explore.main.exceptions.BaseException;
@@ -34,7 +33,6 @@ public class RatingService {
 
     private static final long MAX_RATING = 100L;
 
-    @Transactional
     public void changeRating(Long userId, Long eventId, Boolean ratingValue) {
         Rating rating = validateAndConstructRatingId(userId, eventId, ratingValue);
 
@@ -62,8 +60,7 @@ public class RatingService {
         }
         if (event.get().getState() != PUBLISHED) {
             throw new BaseException("Невозможно проставить рейтинг",
-                    String.format("Для проставления рейтинга событие должно быть опубликовано, текущий статус=%s",
-                            event.get().getState()));
+                    String.format("Для проставления рейтинга событие должно быть опубликовано, текущий статус=%s", event.get().getState()));
         }
 
         return new Rating(
@@ -72,7 +69,6 @@ public class RatingService {
         );
     }
 
-    @Transactional
     private void recalculateEventRating(Event event) {
         List<Rating> ratings = ratingRepository.findAllById_EventId(event.getId());
         int likeCount = 0;
@@ -86,8 +82,7 @@ public class RatingService {
         }
         long totalLikeDislikeCount = likeCount + dislikeCount;
         long calculatedRating = totalLikeDislikeCount == 0 ? 0 :
-                Math.round(MAX_RATING * Math.log1p(totalLikeDislikeCount) * (likeCount - dislikeCount) /
-                        totalLikeDislikeCount);
+                Math.round(MAX_RATING * Math.log1p(totalLikeDislikeCount) * (likeCount - dislikeCount) / totalLikeDislikeCount);
         log.info("Для события рассчитан рейтинг eventId={}, rating={}", event.getId(), calculatedRating);
         event.setCalculatedRating(calculatedRating);
         eventRepository.save(event);

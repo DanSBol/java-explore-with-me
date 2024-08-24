@@ -21,8 +21,7 @@ public class RatingPrivateController {
         if (isLike == null) {
             log.info("Запрос на удаление рейтинга userId={}, eventId={}", userId, eventId);
         } else {
-            log.info("Запрос на проставление рейтинга={} событию userId={}, eventId={}", isLike ? "like" : "dislike",
-                    userId, eventId);
+            log.info("Запрос на проставление рейтинга={} событию userId={}, eventId={}", isLike ? "like" : "dislike", userId, eventId);
         }
         ratingService.changeRating(userId, eventId, isLike);
         return new ResponseEntity<>(true, HttpStatus.OK);

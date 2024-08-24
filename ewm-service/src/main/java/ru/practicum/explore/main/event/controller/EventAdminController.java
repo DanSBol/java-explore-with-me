@@ -23,9 +23,7 @@ public class EventAdminController {
     private final EventService eventService;
 
     @PatchMapping("/{eventId}")
-    public ResponseEntity<EventFullDto> patchEvent(@PathVariable Long eventId,
-                                                   @RequestBody @Valid UpdateEventAdminRequest
-                                                           updateEventAdminRequest) {
+    public ResponseEntity<EventFullDto> patchEvent(@PathVariable Long eventId, @RequestBody @Valid UpdateEventAdminRequest updateEventAdminRequest) {
         log.info("Редактирование данных события и его статуса id={}, event={}", eventId, updateEventAdminRequest);
         return new ResponseEntity<>(eventService.updateEventsByAdmin(eventId, updateEventAdminRequest), HttpStatus.OK);
     }
@@ -34,18 +32,12 @@ public class EventAdminController {
     public ResponseEntity<List<EventFullDto>> getAllEvents(@RequestParam(required = false) List<Long> users,
                                                            @RequestParam(required = false) List<EventState> states,
                                                            @RequestParam(required = false) List<Long> categories,
-                                                           @RequestParam(required = false)
-                                                               @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-                                                               LocalDateTime rangeStart,
-                                                           @RequestParam(required = false)
-                                                               @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-                                                               LocalDateTime rangeEnd,
+                                                           @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
+                                                           @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
                                                            @RequestParam(defaultValue = "0") Integer from,
                                                            @RequestParam(defaultValue = "10") Integer size) {
-        log.info("Поиск событий по параметрам users={}, states={}, categories={}, rangeStart={}, rangeEnd={}, " +
-                        "from={}, size={}",
+        log.info("Поиск событий по параметрам users={}, states={}, categories={}, rangeStart={}, rangeEnd={}, from={}, size={}",
                 users, states, categories, rangeStart, rangeEnd, from, size);
-        return new ResponseEntity<>(eventService.getEventsForAdmin(users, states, categories, rangeStart, rangeEnd,
-                from, size), HttpStatus.OK);
+        return new ResponseEntity<>(eventService.getEventsForAdmin(users, states, categories, rangeStart, rangeEnd, from, size), HttpStatus.OK);
     }
 }
